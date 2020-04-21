@@ -7,11 +7,6 @@
     <groupId>ru.job4j</groupId>
     <artifactId>tracker</artifactId>
     <version>1.0</version>
-    <build>
-        <plugins>
-
-        </plugins>
-    </build>
 
     <properties>
         <maven.compiler.source>14</maven.compiler.source>

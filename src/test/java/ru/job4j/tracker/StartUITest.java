@@ -26,7 +26,7 @@ public class StartUITest {
         tracker.add(item);
         String[] answers = {
                 item.getId(), // id сохраненной заявки в объект tracker.
-                "replace item"
+                "replaced item"
         };
         StartUI.replaceItem(new StubInput(answers), tracker);
         Item replaced = tracker.findById(item.getId());

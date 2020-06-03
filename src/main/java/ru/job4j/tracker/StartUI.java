@@ -22,9 +22,15 @@ public class StartUI {
     public static void main(String[] args) {
         Input input = new ConsoleInput();
         Tracker tracker = new Tracker();
-        UserAction[] actions = {
-                new CreateAction()
-        };
+        UserAction[] actions = new CreateAction[7];
+        actions[0] = new CreateAction();
+        actions[1] = new FindAllAction();
+        actions[2] = new ReplaceAction();
+        actions[3] = new DeleteAction();
+        actions[4] = new FindByIdAction();
+        actions[5] = new FindByNameAction();
+        actions[6] = new ExitAction();
+
         new StartUI().init(input, tracker, actions);
     }
 }

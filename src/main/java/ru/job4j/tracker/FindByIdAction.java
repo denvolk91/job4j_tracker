@@ -16,9 +16,9 @@ public class FindByIdAction implements UserAction {
         String id = input.askStr("Введите номер заявки: ");
         Item rsl = tracker.findById(id);
         if (rsl == null) {
-            System.out.println("Неверный номер заявки");
+            out.println("Неверный номер заявки");
         } else {
-            System.out.println(rsl);
+            out.println(rsl);
         }
         return true;
     }

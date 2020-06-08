@@ -15,9 +15,9 @@ public class DeleteAction implements UserAction {
     public boolean execute(Input input, Tracker tracker) {
         String nameId = input.askStr("Введите имя заявки которую хотите удалить: ");
         if (tracker.delete(nameId)) {
-            System.out.println("Успешное удаление");
+            out.println("Успешное удаление");
         } else {
-            System.out.println("Ошибка. Неверное имя заявки");
+            out.println("Ошибка. Неверное имя заявки");
         }
         return true;
     }

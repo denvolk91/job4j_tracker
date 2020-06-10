@@ -1,16 +1,13 @@
 package ru.job4j.tracker;
 import org.junit.Test;
 
-import java.util.Scanner;
-
-import static org.hamcrest.core.IsNull.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 public class StartUITest {
     @Test
     public void whenCreateItem() {
-        Output out = new ConsoleOutput();
+        Output out = new StubOutput();
         Input in = new StubInput(
                 new String[]{"0", "Item name", "1"}
         );
@@ -20,7 +17,14 @@ public class StartUITest {
                 new ExitAction()
         };
         new StartUI(out).init(in, tracker, actions);
-        assertThat(tracker.findAll()[0].getName(), is("Item name"));
+        assertThat(out.toString(), is(
+                "Menu." + System.lineSeparator() +
+                "0. Create" + System.lineSeparator() +
+                "1. === Конец программы ===" + System.lineSeparator() +
+                "=== Create a new Item ===" + System.lineSeparator() +
+                "Menu." + System.lineSeparator() +
+                "0. Create" + System.lineSeparator() +
+                "1. === Конец программы ===" + System.lineSeparator()));
     }
 
     @Test
@@ -42,7 +46,7 @@ public class StartUITest {
 
     @Test
     public void whenReplaceItem() {
-        Output out = new ConsoleOutput();
+        Output out = new StubOutput();
         Tracker tracker = new Tracker();
         /* Добавим в tracker новую заявку */
         Item item = tracker.add(new Item("Replaced item"));
@@ -56,12 +60,20 @@ public class StartUITest {
                 new ExitAction()
         };
         new StartUI(out).init(in, tracker, actions);
-        assertThat(tracker.findById(item.getId()).getName(), is(replacedName));
+        assertThat(out.toString(), is(
+                "Menu." + System.lineSeparator() +
+                        "0. === Замена заявки в старую ячейку ===" + System.lineSeparator() +
+                        "1. === Конец программы ===" + System.lineSeparator() +
+                        "Успешная замена" + System.lineSeparator() +
+                        "Menu." + System.lineSeparator() +
+                        "0. === Замена заявки в старую ячейку ===" + System.lineSeparator() +
+                        "1. === Конец программы ===" + System.lineSeparator()
+                ));
     }
 
     @Test
     public void whenDeleteItem() {
-        Output out = new ConsoleOutput();
+        Output out = new StubOutput();
         Tracker tracker = new Tracker();
         /* Добавим в tracker новую заявку */
         Item item = tracker.add(new Item("Deleted item"));
@@ -74,28 +86,49 @@ public class StartUITest {
                 new ExitAction()
         };
         new StartUI(out).init(in, tracker, actions);
-        assertThat(tracker.findById(item.getId()), is(nullValue()));
+        assertThat(out.toString(), is(
+                "Menu." + System.lineSeparator() +
+                        "0. === Удалите заявку ===" + System.lineSeparator() +
+                        "1. === Конец программы ===" + System.lineSeparator() +
+                        "Успешное удаление" + System.lineSeparator() +
+                        "Menu." + System.lineSeparator() +
+                        "0. === Удалите заявку ===" + System.lineSeparator() +
+                        "1. === Конец программы ===" + System.lineSeparator()
+                ));
     }
 
     @Test
     public void whenFindAllAction() {
-        Output out = new ConsoleOutput();
+        Output out = new StubOutput();
         Tracker tracker = new Tracker();
         Input in = new StubInput(
-                new String[] {"0", "new item1", "0", "new item2", "1", "2"}
+                new String[] {"0", "1"}
         );
+        Item[] add = {
+                tracker.add(new Item("name1")),
+                tracker.add(new Item("name2"))
+        };
         UserAction[] actions = {
-                new CreateAction(out),
                 new FindAllAction(out),
                 new ExitAction()
         };
         new StartUI(out).init(in, tracker,actions);
-        assertThat(tracker.findAll()[0].getName(), is("new item1"));
+        assertThat(out.toString(), is(
+                "Menu." + System.lineSeparator() +
+                        "0. === Отображение всех заявок ===" + System.lineSeparator() +
+                        "1. === Конец программы ===" + System.lineSeparator() +
+                        "Список на 2 заявок(ки)" + System.lineSeparator() +
+                        add[0] + System.lineSeparator() +
+                        add[1] + System.lineSeparator() +
+                        "Menu." + System.lineSeparator() +
+                        "0. === Отображение всех заявок ===" + System.lineSeparator() +
+                        "1. === Конец программы ===" + System.lineSeparator()
+        ));
     }
 
     @Test
     public void whenFindByIdAction() {
-        Output out = new ConsoleOutput();
+        Output out = new StubOutput();
         Tracker tracker = new Tracker();
         Item item = tracker.add(new Item("new item"));
         String id = item.getId();
@@ -107,23 +140,40 @@ public class StartUITest {
                 new ExitAction()
         };
         new StartUI(out).init(in, tracker, actions);
-        assertThat(tracker.findById(id).getId(), is(id));
+        assertThat(out.toString(), is(
+                "Menu." + System.lineSeparator() +
+                        "0. === Поиск заявки по номеру ===" + System.lineSeparator() +
+                        "1. === Конец программы ===" + System.lineSeparator() +
+                        tracker.findById(id) + System.lineSeparator() +
+                        "Menu." + System.lineSeparator() +
+                        "0. === Поиск заявки по номеру ===" + System.lineSeparator() +
+                        "1. === Конец программы ===" + System.lineSeparator()
+        ));
     }
 
     @Test
     public void whenFindByNameAction() {
-        Output out = new ConsoleOutput();
+        Output out = new StubOutput();
         Tracker tracker = new Tracker();
         Item item = tracker.add(new Item("new item"));
-        String name = item.getName();
+        Item[] findName = tracker.findByName("new item");
         Input in = new StubInput(
-                new String[] {"0", name, "1"}
+                new String[] {"0", item.getName(), "1"}
         );
         UserAction[] actions = {
                 new FindByNameAction(out),
                 new ExitAction()
         };
         new StartUI(out).init(in, tracker, actions);
-        assertThat(tracker.findByName(name)[0].getName(), is(name));
+        assertThat(out.toString(), is(
+                "Menu." + System.lineSeparator() +
+                        "0. === Поиск списка заявок по совпавшим именам ===" + System.lineSeparator() +
+                        "1. === Конец программы ===" + System.lineSeparator() +
+                        "Список на 1 заявок(ки)" + System.lineSeparator() +
+                         findName[0] + System.lineSeparator() +
+                        "Menu." + System.lineSeparator() +
+                        "0. === Поиск списка заявок по совпавшим именам ===" + System.lineSeparator() +
+                        "1. === Конец программы ===" + System.lineSeparator()
+        ));
     }
 }
